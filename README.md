@@ -45,7 +45,7 @@ leaf-disease-project/
 
 1. Clone the repository:
 
-git clone https://github.com/your-username/leaf-disease-app.git
+git clone https://github.com/Rishikade/leaf-disease-app.git
 
 2. Navigate to project folder:
 
