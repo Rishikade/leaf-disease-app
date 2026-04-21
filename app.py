@@ -4,133 +4,141 @@ import numpy as np
 import cv2
 from PIL import Image
 
-# Page config
-st.set_page_config(page_title="Leaf Detector", layout="centered")
-
-# UI styling
-st.markdown(
-    """
-    <style>
-    .stApp {
-        background-color: #f0f8f5;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
 # Load model
 model = tf.keras.models.load_model("model/leaf_model.h5")
 
-# Classes
 classes = ['early_blight', 'healthy', 'late_blight']
 
 # Disease info
 disease_info = {
-    "early_blight": "🟤 Early blight detected. Remove infected leaves and use fungicide.",
-    "late_blight": "⚠ Late blight detected. Avoid moisture and apply fungicide immediately.",
-    "healthy": "✅ Plant is healthy. Maintain proper care."
+    "early_blight": "Fungal disease. Remove infected leaves and apply fungicide.",
+    "late_blight": "Serious disease. Avoid moisture and apply fungicide immediately.",
+    "healthy": "Plant is healthy. Maintain proper watering and sunlight."
 }
 
 # Chatbot logic
-def chatbot_response(user_input):
+def chatbot(user_input):
     user_input = user_input.lower()
 
     if "early blight" in user_input:
-        return "Early blight is a fungal disease. Remove affected leaves and use fungicide."
+        return "Early blight is caused by fungus. Remove infected leaves and use fungicide."
 
     elif "late blight" in user_input:
-        return "Late blight spreads fast. Avoid moisture and apply fungicide immediately."
+        return "Late blight spreads quickly. Keep leaves dry and apply fungicide."
 
     elif "healthy" in user_input:
-        return "Your plant is healthy. Maintain proper watering and sunlight."
+        return "Your plant is healthy. Just maintain good care."
 
-    elif "how to cure" in user_input or "cure" in user_input:
-        return "Use proper fungicides, remove infected parts, and maintain plant hygiene."
+    elif "cure" in user_input:
+        return "Use fungicide, remove infected parts, and ensure proper airflow."
 
-    elif "prevention" in user_input:
-        return "Avoid overwatering, ensure good airflow, and inspect plants regularly."
+    elif "prevent" in user_input:
+        return "Avoid overwatering and inspect plants regularly."
 
     else:
-        return "Ask me about plant diseases, cure, or prevention 🌿"
+        return "Ask about diseases, cure, or prevention 🌿"
 
-# History store
-if "history" not in st.session_state:
-    st.session_state.history = []
+# Page config
+st.set_page_config(page_title="LeafSense AI", layout="wide")
 
-# Title
-st.title("🌿 AI Leaf Disease Detector + Chatbot 🤖")
-st.write("Upload or capture a leaf image and chat about plant diseases 🚀")
+# ---------- UI ----------
+st.markdown("""
+<style>
+body { background-color: #f6f7fb; }
+.block-container { padding-top: 2rem; }
 
-# Upload
-uploaded_file = st.file_uploader("📤 Upload a leaf image", type=["jpg", "png", "jpeg"])
+.title { font-size: 38px; font-weight: 700; color: #111827; }
+.subtitle { color: #6b7280; }
 
-# Camera
-camera_image = st.camera_input("📸 Or take a photo")
+.card {
+    background: white;
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0px 6px 20px rgba(0,0,0,0.06);
+}
 
-def process_image(image):
-    img = np.array(image)
-    img = cv2.resize(img, (224,224))
-    img = img / 255.0
-    img = np.reshape(img, (1,224,224,3))
+.result { font-size: 22px; font-weight: 600; }
+</style>
+""", unsafe_allow_html=True)
 
-    prediction = model.predict(img)
+# Header
+st.markdown('<div class="title">🌿 LeafSense AI</div>', unsafe_allow_html=True)
+st.markdown('<div class="subtitle">AI-powered plant disease detection</div>', unsafe_allow_html=True)
 
-    top3_idx = np.argsort(prediction[0])[-3:][::-1]
-    result = classes[np.argmax(prediction)]
-    confidence = np.max(prediction) * 100
+st.markdown("---")
 
-    return prediction, top3_idx, result, confidence
+left, right = st.columns(2)
 
-# Upload prediction
-if uploaded_file is not None:
-    image = Image.open(uploaded_file)
+# ---------- LEFT ----------
+with left:
+    st.markdown('<div class="card">', unsafe_allow_html=True)
+    st.subheader("📸 Input Image")
 
-    st.image(image, caption="Uploaded Leaf Image 🌿", use_column_width=True)
-    st.markdown("### 🔍 Analysis Result")
+    uploaded_file = st.file_uploader("Upload image", type=["jpg","png","jpeg"])
+    camera = st.camera_input("Take photo")
 
-    prediction, top3_idx, result, confidence = process_image(image)
+    image = None
 
-    st.success(f"Prediction: {result}")
-    st.info(f"Confidence: {confidence:.2f}%")
-    st.warning(disease_info[result])
+    if uploaded_file:
+        image = Image.open(uploaded_file)
+        st.image(image, use_column_width=True)
 
-    st.markdown("### 🧠 Top Predictions")
-    for i in top3_idx:
-        st.write(f"{classes[i]} : {prediction[0][i]*100:.2f}%")
+    elif camera:
+        image = Image.open(camera)
+        st.image(image, use_column_width=True)
 
-    st.session_state.history.append(result)
+    st.markdown('</div>', unsafe_allow_html=True)
 
-# Camera prediction
-if camera_image is not None:
-    image = Image.open(camera_image)
+# ---------- RIGHT ----------
+with right:
+    st.markdown('<div class="card">', unsafe_allow_html=True)
+    st.subheader("🔍 Analysis")
 
-    st.image(image, caption="Captured Image 📸", use_column_width=True)
-    st.markdown("### 🔍 Analysis Result")
+    if image is not None:
+        img = np.array(image)
+        img = cv2.resize(img, (224,224))
+        img = img / 255.0
+        img = np.reshape(img, (1,224,224,3))
 
-    prediction, top3_idx, result, confidence = process_image(image)
+        prediction = model.predict(img)
 
-    st.success(f"Prediction: {result}")
-    st.info(f"Confidence: {confidence:.2f}%")
-    st.warning(disease_info[result])
+        result = classes[np.argmax(prediction)]
+        confidence = np.max(prediction) * 100
 
-    st.markdown("### 🧠 Top Predictions")
-    for i in top3_idx:
-        st.write(f"{classes[i]} : {prediction[0][i]*100:.2f}%")
+        st.success(f"Prediction: {result}")
+        st.info(f"Confidence: {confidence:.2f}%")
 
-    st.session_state.history.append(result)
+        st.warning(disease_info[result])
 
-# History
-if st.session_state.history:
-    st.markdown("### 📜 Prediction History")
-    for item in st.session_state.history[-5:]:
-        st.write(item)
+        st.markdown("### 📊 Top Predictions")
 
-# Chatbot UI
-st.markdown("## 🤖 Plant AI Chatbot")
+        top3 = np.argsort(prediction[0])[-3:][::-1]
 
-user_input = st.text_input("Ask something about plant diseases:")
+        for i in top3:
+            st.progress(float(prediction[0][i]))
+            st.caption(f"{classes[i]} — {prediction[0][i]*100:.2f}%")
+
+        # Model Info
+        st.markdown("### 📈 Model Info")
+        st.write("Model: CNN (Deep Learning)")
+        st.write("Input Size: 224x224")
+        st.write("Classes: Early Blight, Late Blight, Healthy")
+
+    else:
+        st.info("Upload or capture an image")
+
+    st.markdown('</div>', unsafe_allow_html=True)
+
+# ---------- CHATBOT ----------
+st.markdown("---")
+st.subheader("🤖 Plant Assistant")
+
+user_input = st.text_input("Ask about plant disease...")
 
 if user_input:
-    response = chatbot_response(user_input)
+    response = chatbot(user_input)
     st.write("🤖:", response)
+
+# Footer
+st.markdown("---")
+st.caption("LeafSense AI • Built with Deep Learning 🚀")
