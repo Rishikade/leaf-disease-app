@@ -52,3 +52,28 @@ plt.plot(history.history['val_accuracy'], label='val accuracy')
 plt.legend()
 plt.title("Model Accuracy")
 plt.savefig("accuracy.png")
+
+from sklearn.metrics import classification_report, confusion_matrix
+import numpy as np
+
+# Get predictions
+y_pred = model.predict(test_data)
+y_pred_classes = np.argmax(y_pred, axis=1)
+
+y_true = test_data.classes
+
+print("Classification Report:")
+print(classification_report(y_true, y_pred_classes))
+
+print("Confusion Matrix:")
+print(confusion_matrix(y_true, y_pred_classes))
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+cm = confusion_matrix(y_true, y_pred_classes)
+
+plt.figure(figsize=(6,4))
+sns.heatmap(cm, annot=True, fmt='d')
+plt.title("Confusion Matrix")
+plt.savefig("confusion_matrix.png")
