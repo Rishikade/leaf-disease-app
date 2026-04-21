@@ -1,114 +1,116 @@
-🌿 AI Leaf Disease Detection Web App
+# 🌿 LeafSense AI — Plant Disease Detection System
 
-This project is a deep learning-based web application that detects plant leaf diseases using image classification. It also includes a smart AI chatbot for plant-related queries.
-
----
-
-🚀 Features
-
-- 📸 Upload or capture leaf images
-- 🧠 AI-based disease prediction (CNN model)
-- 📊 Displays confidence score
-- 🔝 Top 3 predictions
-- 🌿 Disease information and solutions
-- 🤖 AI chatbot for plant queries
-- 📱 Mobile-friendly web app
+An end-to-end deep learning project that detects plant leaf diseases using image classification and provides intelligent assistance through an interactive web application.
 
 ---
 
-🧠 Technologies Used
+## 🚀 Live Features
 
-- Python
-- TensorFlow / Keras
-- OpenCV
-- Streamlit
-- NumPy
-- PIL
-- OpenAI API (for chatbot)
+* 📸 Upload or capture leaf images using camera
+* 🧠 AI-based disease prediction (Deep Learning model)
+* 📊 Confidence score with top-3 predictions
+* 🌿 Disease explanation and treatment suggestions
+* 🤖 Built-in chatbot for plant-related queries
+* 📱 Responsive and clean web UI
 
 ---
 
-📂 Project Structure
+## 🧠 Tech Stack
 
-leaf-disease-project/
+* **Python**
+* **TensorFlow / Keras**
+* **OpenCV**
+* **Streamlit**
+* **NumPy & PIL**
+
+---
+
+## 📂 Project Structure
+
+```
+leaf-disease-detection-ai/
 │
 ├── app.py
 ├── train.py
 ├── requirements.txt
 ├── model/
 │   └── leaf_model.h5
-└── dataset/ (not included in repo)
+├── accuracy.png
+├── confusion_matrix.png
+└── README.md
+```
 
 ---
 
-⚙️ Installation
+## ⚙️ How It Works
 
-1. Clone the repository:
+1. User uploads or captures a leaf image
+2. Image is preprocessed (resize + normalization)
+3. CNN model predicts disease class
+4. App displays:
 
-git clone https://github.com/Rishikade/leaf-disease-app.git
+   * Prediction result
+   * Confidence score
+   * Top 3 predictions
+5. Chatbot assists with disease queries and prevention
 
-2. Navigate to project folder:
+---
 
-cd leaf-disease-app
+## 📈 Model Details
 
-3. Install dependencies:
+* Input Size: **224x224**
+* Model Type: **CNN (Deep Learning)**
+* Classes:
 
+  * Early Blight
+  * Late Blight
+  * Healthy
+
+---
+
+## 📊 Evaluation Metrics
+
+* Accuracy
+* Precision
+* Recall
+* F1-Score
+* Confusion Matrix visualization
+
+---
+
+## ▶️ Run Locally
+
+```bash
 pip install -r requirements.txt
-
----
-
-▶️ Run the App
-
 streamlit run app.py
-Link: http://localhost:8504/
+```
 
 ---
 
-🔑 API Setup (Important)
+## 📌 Key Highlights
 
-- Get your API key from OpenAI
-- Replace in app.py:
-
-client = OpenAI(api_key="YOUR_API_KEY_HERE")
-
----
-
-📸 How It Works
-
-1. Upload or capture a leaf image
-2. Model processes the image
-3. Predicts disease category
-4. Shows confidence and suggestions
-5. Chatbot answers plant-related queries
+* End-to-end ML pipeline (training → evaluation → deployment)
+* Real-world problem solving (agriculture AI)
+* Interactive UI with camera support
+* Data visualization (confidence + prediction bars)
 
 ---
 
-📈 Future Improvements
+## 🔮 Future Improvements
 
-- Real-time camera detection
-- Mobile app (Android/iOS)
-- Voice-based chatbot
-- Multi-language support
-
----
-
-💯 Project Highlights
-
-- End-to-end AI project
-- Real-world application
-- Web + ML + Chatbot integration
+* Mobile app deployment 📱
+* Voice-enabled chatbot 🎤
+* Multi-language support 🌍
+* Real-time detection using video stream
 
 ---
 
-📌 Note
+## 👩‍💻 Author
 
-- Dataset is not included due to size
-- Model file must be present in "/model" folder
-
----
-
-👩‍💻 Author
-
-Developed by Rishika De
+**Rishika De**
 
 ---
+
+## ⭐ If you like this project
+
+Give it a ⭐ on GitHub and feel free to contribute!
